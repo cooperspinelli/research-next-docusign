@@ -5,7 +5,8 @@ import process from 'process';
 
 export async function POST(request: NextRequest) {
   const reqBody = await request.json();
-  const accessToken = await reqBody.accessToken;
+  const accessToken = await reqBody.token;
+  console.log(accessToken);
   const resp = await fetch('https://account-d.docusign.com/oauth/userinfo', {
     method: 'GET', // HTTP method
     headers: {

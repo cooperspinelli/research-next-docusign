@@ -1,0 +1,11 @@
+User Story:
+
+fill out some form
+    favColor
+    name
+    other stuff
+
+click sign document
+    redirects them to a docusign url with a pdf autofilled with the data from the form
+    sends them an email with that same link
+

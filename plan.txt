@@ -1,6 +1,7 @@
 routes
 
 
+WHAT VLAD DID
 
 1. /form
     - takes form request
@@ -14,3 +15,23 @@ routes
 
 2. checkToken
     - makes request if no token or token is expired
+
+WHAT WE WILL DO
+
+two distinct things
+
+    1) getting the api key and having access to it in the places we need
+        (both on form submit (just in case) and beforehand)
+
+Server:
+
+what should happen when the form submits
+make an api call with the from inputs. API responds with url to redirect to
+or an error message
+
+options:
+    make api request which does 2 and returns url for redirect
+    make a route which handles the form
+
+Client:
+renders form and manages for inputs (cotrolled component)

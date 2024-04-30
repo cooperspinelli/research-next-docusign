@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import process from 'process';
 
 // Endpoints for /api/apiKey
 

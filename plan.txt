@@ -32,3 +32,15 @@ options:
 
 Client:
 renders form and manages for inputs (cotrolled component)
+
+
+
+
+
+
+Authorization Steps
+
+1. Get Authorization code via consent form
+2. Get access code (requires authorization code)
+3. Get uri (requires access code)
+4. Make api request (requires access code and uri)

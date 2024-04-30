@@ -26,8 +26,7 @@ export default function Form() {
         <form>
             <label>Name</label>
             <input name='name' onChange={handleChange} value={formData.name}/>
-            <label>Email</label>
-            <input name='email' onChange={handleChange} value={formData.name}/>
+
             <label>Favorite Color</label>
             <input name='color' onChange={handleChange} value={formData.name}/>
             <button onSubmit={handleSubmit}>Submit</button>

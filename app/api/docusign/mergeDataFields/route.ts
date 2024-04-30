@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   const reqBody = await request.json();
 
-  const name = 'anissa ';
-  const favColor = "blue";
+  const name = reqBody.name;
+  const favColor = reqBody.favColor;
 
   const requestData = {
     docGenFormFields: [

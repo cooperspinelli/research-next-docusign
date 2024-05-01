@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import process from 'process';
+import { encode } from 'punycode';
 
 // Endpoints for /api/apiKey
 

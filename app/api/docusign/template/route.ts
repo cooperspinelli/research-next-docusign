@@ -28,8 +28,6 @@ try {
         body: JSON.stringify(requestData)
     });
 
-    console.log('********************response: ',response);
-
     const responseData = await response.json();
     console.log(responseData)
 

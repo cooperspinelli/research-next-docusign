@@ -1,68 +1,153 @@
-'use client';
+"use client";
 
 import { FormEvent } from "react";
 import Form from "./components/Form";
 
 export default function Home() {
-
   async function handleSubmit(evt: FormEvent) {
     evt.preventDefault();
     console.log("in here");
 
     const nameInput = document.querySelector("#name") as HTMLInputElement;
-    const favColorInput = document.querySelector("#favColor") as HTMLInputElement;
+    const favColorInput = document.querySelector(
+      "#favColor"
+    ) as HTMLInputElement;
 
-    const accessToken = "eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQsAAAABAAUABwAAIOouVWncSAgAAGANPZhp3EgCADwaZJKhjQhIrbnfevOMUUAVAAEAAAAYAAIAAAAFAAAAHQAAAA0AJAAAADE4ZTYzZDNkLWNkNTQtNDFhMS1hZGQ3LTVmZWE3Yjc4OTIzYSIAJAAAADE4ZTYzZDNkLWNkNTQtNDFhMS1hZGQ3LTVmZWE3Yjc4OTIzYRIAAQAAAAsAAABpbnRlcmFjdGl2ZTAAgCHIJFVp3Eg3ANT_YenEENVIvyuN4xiUPw0.kToKj0zrCou5gy16L_NS1mZXGGMOWsRvdostwBRJl4BB-md9Krnz8aoPFVw2ofTts11BMVaf-a3tqZ6I3l8c-wzaxvIUpDP5U-OHr6qZuSwLEGl07Z33DPHFp0g1fGUshTjgMvtzFaTBAfCMbuXTjpPJZG8RNGS5gHcQIfG-LJVNBf9j58r3yoQBzIOHt96glXLO-q9kG0kGMTVDkun_MpulrkrtqB86cIQ2OnMb0ZlQGg22Ct_NHVN-j9-LGuT3d3FpIruqrEfQAJIkgWXiE6nEOf5jIDRCJT8e1aUA7VYQF7HrDtnCEsVH_nLC6FSg0Gt6MkN5kYTZjGUTGAwU3w";
+    const accessToken =
+    "eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQsAAAABAAUABwAAUqbqS2ncSAgAAJLJ-I5p3EgCAHTyRgQzb7JJjYIlqKbc6FQVAAEAAAAYAAIAAAAFAAAAHQAAAA0AJAAAAGI2MzdmNmYwLWI2MDQtNDIxNi1hODJiLTNkYmJhYzNhYWM4OSIAJAAAAGI2MzdmNmYwLWI2MDQtNDIxNi1hODJiLTNkYmJhYzNhYWM4ORIAAQAAAAsAAABpbnRlcmFjdGl2ZTAAgOCPu0tp3Eg3AB4Qc1M2_-9Alakk7Iv6Xec.cmaxVL9DCwe5hwkhO5DvJMlkNxLrZDHj2NoEHf_J8-Zmcdd9-__wgMIQkWvFomd0MyfUCB7J-6Du_rDOtZ3pIbes1l7e0vxKlbGKrt_bknsCgDuWa5UAihWDEkZKAAXVmJZWpE8z9N031h8Egw4ZSr7OuzMZ2yD-NPAcLzCDXbkdWgZYquZ1NeyU0Wto6xnXljE7rKvj60vP4iKy4r1ndqVafBflP75WMCVlZNeKI3kDwXeYjUBxdgsGqY1BI_tY703_40xlDK1gSNolhN-4FScv_MToyVTwFi4WWI3mWtr3f5oqAU81fev_hmOr0jh3lV3zPqYHo4dwGTtxxw3PlA"
     const basePath = "https://demo.docusign.net/restapi";
-    const templateId = "4971e3ce-4ba3-4012-b417-67443b917cd9";
-    const envelopeId = "b8a6bcf0-a2e8-4bbc-b57d-9c76c056b9f8";
+
+    // ********* this would be separate functionality run once.
+    //create template
+    const templateResponse = await fetch(
+      "http://localhost:3000/api/docusign/template",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          accessToken,
+          basePath,
+        }),
+      }
+    );
+
+    const templateData = await templateResponse.json();
+    console.log('addTemplate:', templateData);
+    const templateId = templateData.templateId;
+
+    //attach doc to template
+    const addDocResp = await fetch(
+      "http://localhost:3000/api/docusign/addDoc",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          accessToken,
+          basePath,
+          templateId
+        }),
+      }
+    );
+
+    console.log('addDoc', await addDocResp.json());
+
+
+    //add tabs to template
+    const addTabsResp = await fetch("http://localhost:3000/api/docusign/addTabs", {
+      method: "POST",
+        body: JSON.stringify({
+          accessToken,
+          basePath,
+          templateId
+        }),
+    })
+
+    console.log('addTabs', await addTabsResp.json());
+
+    // ********* what to run for each user
+    //create envelope
+    const envResp = await fetch("http://localhost:3000/api/docusign/createEnvelope", {
+      method: "POST",
+        body: JSON.stringify({
+          accessToken,
+          basePath,
+          templateId
+        }),
+    });
+
+    const envData = await envResp.json();
+    console.log(envData);
+    const envelopeId = envData.envelopeId;
+
+    // generate doc form fields
+    const genDocFormsResp = await fetch("http://localhost:3000/api/docusign/getDocGenFormFields", {
+      method: "POST",
+        body: JSON.stringify({
+          accessToken,
+          basePath,
+          templateId,
+          envelopeId
+        }),
+    });
+
+    const genDocFormData =  await genDocFormsResp.json();
+    console.log('genDocForms', genDocFormData);
+    const documentId = genDocFormData.data.docGenFormFields[0].documentId
+
 
     const payload = {
       accessToken,
       basePath,
       templateId,
       envelopeId,
-      "documentId": "7ea61938-3429-4bb9-bbe7-63c442e305eb",
+      documentId,
       name: nameInput.value,
-      favColor: favColorInput.value
+      favColor: favColorInput.value,
     };
 
-    const mergeTagsResponse = await fetch('http://localhost:3000/api/docusign/mergeDataFields', {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
+    const mergeTagsResponse = await fetch(
+      "http://localhost:3000/api/docusign/mergeDataFields",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
 
-    const sendEmailResponse = await fetch('http://localhost:3000/api/docusign/sendEnvelope', {
-      method: 'POST',
-      body: JSON.stringify({
-        accessToken,
-        basePath,
-        templateId,
-        envelopeId
-      })
-    });
+    const sendEmailResponse = await fetch(
+      "http://localhost:3000/api/docusign/sendEnvelope",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          accessToken,
+          basePath,
+          templateId,
+          envelopeId,
+        }),
+      }
+    );
 
-    const getSigningUrlResponse = await fetch('http://localhost:3000/api/docusign/getSigningUrl', {
-      method: 'POST',
-      body: JSON.stringify({
-        accessToken,
-        basePath,
-        envelopeId
-      })
-    });
+    const getSigningUrlResponse = await fetch(
+      "http://localhost:3000/api/docusign/getSigningUrl",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          accessToken,
+          basePath,
+          envelopeId,
+        }),
+      }
+    );
 
     const signingUrlData = await getSigningUrlResponse.json();
 
-    console.log(signingUrlData.url);
+    console.log(signingUrlData);
   }
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <label>Name</label>
-        <input name='name' id="name" />
+        <input name="name" id="name" />
         <label>Favorite Color</label>
-        <input name='favColor' id="favColor" />
+        <input name="favColor" id="favColor" />
         <button>Submit</button>
       </form>
     </div>

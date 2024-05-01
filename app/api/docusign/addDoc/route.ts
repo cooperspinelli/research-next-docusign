@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
   const reqBody = await request.json();
 
   // const filePath = path.join(__dirname, "docusign_test_doc.docx");
-  const filePath = "/home/cooper/rithm/projects/research-next-docusign/app/api/docusign/addDoc/docusign_test_doc.docx"
+  const filePath = process.env.DOC_PATH!;
 
   try {
     // Read and base64 encode the document
